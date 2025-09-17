@@ -28,7 +28,7 @@ val ktlint by configurations.creating
 
 dependencies {
     compile(kotlin("stdlib"))
-    compile("org.slf4j:slf4j-api:1.7.29")
+    compile("org.slf4j:slf4j-api:2.0.17")
     ktlint("com.pinterest:ktlint:0.35.0")
     testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
 }
