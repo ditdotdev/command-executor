@@ -8,28 +8,31 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.github.ben-manes:gradle-versions-plugin:0.27.0")
+        classpath("com.github.ben-manes:gradle-versions-plugin:0.52.0")
     }
 }
 
 plugins {
-    kotlin("jvm") version "1.3.50"
-    id("com.github.ben-manes.versions") version("0.27.0")
+    kotlin("jvm") version "2.2.20"
+    id("com.github.ben-manes.versions") version("0.52.0")
     `maven-publish`
 }
 
 repositories {
     mavenCentral()
-    jcenter()
     maven("https://dl.bintray.com/kotlin/kotlinx")
+    maven {
+        name = "titan"
+        url = uri("https://maven.titan-data.io")
+    }
 }
 
 val ktlint by configurations.creating
 
 dependencies {
-    compile(kotlin("stdlib"))
-    compile("org.slf4j:slf4j-api:1.7.29")
-    ktlint("com.pinterest:ktlint:0.35.0")
+    implementation(kotlin("stdlib"))
+    implementation("org.slf4j:slf4j-api:2.0.17")
+    ktlint("com.pinterest:ktlint:0.51.0-FINAL")
     testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
 }
 
@@ -74,9 +77,9 @@ publishing {
 
 // Treat all warnings as errors
 tasks.withType<KotlinCompile>().configureEach {
-    kotlinOptions {
-        jvmTarget = "1.8"
-        allWarningsAsErrors = true
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
+        allWarningsAsErrors.set(true)
     }
 }
 
@@ -101,7 +104,7 @@ val ktlintTask = tasks.register<JavaExec>("ktlint") {
     group = LifecycleBasePlugin.VERIFICATION_GROUP
     description = "Check Kotlin code style"
     classpath = ktlint
-    main = "com.pinterest.ktlint.Main"
+    mainClass.set("com.pinterest.ktlint.Main")
     args("src/**/*.kt")
 }
 
@@ -109,7 +112,7 @@ tasks.register<JavaExec>("ktlintFormat") {
     group = LifecycleBasePlugin.VERIFICATION_GROUP
     description = "Fix Kotlin code style deviations"
     classpath = ktlint
-    main = "com.pinterest.ktlint.Main"
+    mainClass.set("com.pinterest.ktlint.Main")
     args("-F", "src/**/*.kt")
 }
 

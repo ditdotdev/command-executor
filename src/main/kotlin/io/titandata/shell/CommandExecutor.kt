@@ -4,9 +4,9 @@
 
 package io.titandata.shell
 
+import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.util.concurrent.TimeUnit
-import org.slf4j.LoggerFactory
 
 /**
  * Handle invocation of external commands. This is a wrapper around the native interfaces that
@@ -15,12 +15,14 @@ import org.slf4j.LoggerFactory
  * system.
  */
 class CommandExecutor(val timeout: Long = 60) {
-
     companion object {
         val log = LoggerFactory.getLogger(CommandExecutor::class.java)
     }
 
-    fun exec(process: Process, argString: String): String {
+    fun exec(
+        process: Process,
+        argString: String,
+    ): String {
         try {
             val output = getOutput(process)
             process.waitFor(timeout, TimeUnit.SECONDS)
@@ -65,9 +67,11 @@ class CommandExecutor(val timeout: Long = 60) {
     fun checkResult(process: Process) {
         if (process.exitValue() != 0) {
             val errOutput = process.errorStream.bufferedReader().readText()
-            throw CommandException("Command failed: $errOutput",
-                    exitCode = process.exitValue(),
-                    output = errOutput)
+            throw CommandException(
+                "Command failed: $errOutput",
+                exitCode = process.exitValue(),
+                output = errOutput,
+            )
         }
     }
 
