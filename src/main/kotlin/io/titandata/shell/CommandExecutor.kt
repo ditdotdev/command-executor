@@ -14,7 +14,9 @@ import java.util.concurrent.TimeUnit
  * a non-zero exit status. It is also a convenient to mock out any dependencies on the external
  * system.
  */
-class CommandExecutor(val timeout: Long = 60) {
+class CommandExecutor(
+    val timeout: Long = 60,
+) {
     companion object {
         val log = LoggerFactory.getLogger(CommandExecutor::class.java)
     }
@@ -56,9 +58,7 @@ class CommandExecutor(val timeout: Long = 60) {
      * This method provides back the raw process, which then can be used to read or write
      * data to the input stream, etc.
      */
-    fun start(vararg args: String): Process {
-        return ProcessBuilder().command(*args).start()
-    }
+    fun start(vararg args: String): Process = ProcessBuilder().command(*args).start()
 
     /**
      * Checks whether the command succeeded, throwing an exception with an appropriate error
@@ -78,7 +78,5 @@ class CommandExecutor(val timeout: Long = 60) {
     /**
      * Fetches the output of the given process and returns it.
      */
-    fun getOutput(process: Process): String {
-        return process.inputStream.bufferedReader().readText()
-    }
+    fun getOutput(process: Process): String = process.inputStream.bufferedReader().readText()
 }

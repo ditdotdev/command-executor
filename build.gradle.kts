@@ -32,7 +32,7 @@ val ktlint by configurations.creating
 dependencies {
     implementation(kotlin("stdlib"))
     implementation("org.slf4j:slf4j-api:2.0.17")
-    ktlint("com.pinterest:ktlint:0.51.0-FINAL")
+    ktlint("com.pinterest.ktlint:ktlint-cli:1.7.1")
     testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
 }
 
