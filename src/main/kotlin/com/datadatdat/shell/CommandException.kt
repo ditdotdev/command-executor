@@ -1,8 +1,8 @@
 /*
- * Copyright The Titan Project Contributors.
+ * Copyright Datadatdat.
  */
 
-package io.titandata.shell
+package com.datadatdat.shell
 
 import java.io.IOException
 
