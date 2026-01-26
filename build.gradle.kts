@@ -87,14 +87,14 @@ tasks.withType<KotlinCompile>().configureEach {
 tasks.withType<DependencyUpdatesTask>().configureEach {
     resolutionStrategy {
         componentSelection {
-        	all {
-        	    val rejected = listOf("alpha", "beta", "rc", "cr", "m", "preview", "b", "ea", "eap").any { qualifier ->
-            		candidate.version.matches(Regex("(?i).*[.-]$qualifier[.\\d-+]*"))
-        	    }
-        	    if (rejected) {
-            		reject("Release candidate")
-        	    }
-        	}
+            all { selection: ComponentSelection ->
+                val rejected = listOf("alpha", "beta", "rc", "cr", "m", "preview", "b", "ea", "eap").any { qualifier ->
+                    selection.candidate.version.matches(Regex("(?i).*[.-]$qualifier[.\\d-+]*"))
+                }
+                if (rejected) {
+                    selection.reject("Release candidate")
+                }
+            }
         }
     }
 }
