@@ -78,9 +78,10 @@ class CommandExecutorTest : StringSpec() {
 
         "exec throws on non-zero exit code" {
             val process = mockProcess(stderr = "something failed", exitCode = 1)
-            val e = shouldThrow<CommandException> {
-                executor.exec(process, "bad command")
-            }
+            val e =
+                shouldThrow<CommandException> {
+                    executor.exec(process, "bad command")
+                }
             e.exitCode shouldBe 1
             e.output shouldBe "something failed"
         }
@@ -114,18 +115,20 @@ class CommandExecutorTest : StringSpec() {
 
         "checkResult throws CommandException on non-zero exit code" {
             val process = mockProcess(stderr = "error output", exitCode = 2)
-            val e = shouldThrow<CommandException> {
-                executor.checkResult(process)
-            }
+            val e =
+                shouldThrow<CommandException> {
+                    executor.checkResult(process)
+                }
             e.exitCode shouldBe 2
             e.output shouldBe "error output"
         }
 
         "checkResult exception message contains error output" {
             val process = mockProcess(stderr = "permission denied", exitCode = 1)
-            val e = shouldThrow<CommandException> {
-                executor.checkResult(process)
-            }
+            val e =
+                shouldThrow<CommandException> {
+                    executor.checkResult(process)
+                }
             e.message shouldNotBe null
             e.message!!.contains("permission denied") shouldBe true
         }
