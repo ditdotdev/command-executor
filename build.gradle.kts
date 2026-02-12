@@ -16,6 +16,7 @@ plugins {
     kotlin("jvm") version "2.3.10"
     id("com.github.ben-manes.versions") version("0.53.0")
     `maven-publish`
+    jacoco
 }
 
 repositories {
@@ -34,6 +35,7 @@ dependencies {
     implementation("org.slf4j:slf4j-api:2.0.17")
     ktlint("com.pinterest.ktlint:ktlint-cli:1.8.0")
     testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
+    testImplementation("io.mockk:mockk:1.14.9")
 }
 
 // Jar configuration
@@ -121,4 +123,11 @@ tasks.named("check").get().dependsOn(ktlintTask)
 // Test configuration
 tasks.test {
     useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+    reports {
+        csv.required.set(true)
+    }
 }
