@@ -156,5 +156,24 @@ class CommandExecutorTest : StringSpec() {
             val process = executor.start("echo", "test")
             process shouldNotBe null
         }
+
+        "log companion object is accessible" {
+            CommandExecutor.log shouldNotBe null
+        }
+
+        "start creates a real process" {
+            val realExecutor = CommandExecutor()
+            val process = realExecutor.start("java", "-version")
+            process shouldNotBe null
+            process.waitFor()
+            process.destroy()
+        }
+
+        "exec with real process succeeds" {
+            val realExecutor = CommandExecutor()
+            val process = realExecutor.start("java", "-version")
+            val result = realExecutor.exec(process, "java -version")
+            result shouldNotBe null
+        }
     }
 }
