@@ -38,6 +38,9 @@ class CommandExecutor(
         } catch (e: CommandException) {
             log.error("Exit ${process.exitValue()}: $argString")
             throw e
+        } catch (e: IOException) {
+            log.error("I/O error: $argString: ${e.message}")
+            throw e
         } finally {
             process.destroy()
         }
@@ -66,7 +69,7 @@ class CommandExecutor(
      */
     fun checkResult(process: Process) {
         if (process.exitValue() != 0) {
-            val errOutput = process.errorStream.bufferedReader().readText()
+            val errOutput = process.errorStream.bufferedReader().use { it.readText() }
             throw CommandException(
                 "Command failed: $errOutput",
                 exitCode = process.exitValue(),
@@ -78,5 +81,5 @@ class CommandExecutor(
     /**
      * Fetches the output of the given process and returns it.
      */
-    fun getOutput(process: Process): String = process.inputStream.bufferedReader().readText()
+    fun getOutput(process: Process): String = process.inputStream.bufferedReader().use { it.readText() }
 }
