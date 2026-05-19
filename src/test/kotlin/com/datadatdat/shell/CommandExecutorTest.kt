@@ -20,6 +20,8 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import java.io.ByteArrayInputStream
+import java.io.IOException
+import java.io.InputStream
 
 class CommandExecutorTest : StringSpec() {
     @SpyK
@@ -174,6 +176,91 @@ class CommandExecutorTest : StringSpec() {
             val process = realExecutor.start("java", "-version")
             val result = realExecutor.exec(process, "java -version")
             result shouldNotBe null
+        }
+
+        "getOutput closes the inputStream even when read throws IOException" {
+            val throwingStream =
+                object : InputStream() {
+                    var closed: Boolean = false
+
+                    override fun read(): Int = throw IOException("boom")
+
+                    override fun close() {
+                        closed = true
+                        super.close()
+                    }
+                }
+            val process = mockk<Process>()
+            every { process.inputStream } returns throwingStream
+            shouldThrow<IOException> {
+                executor.getOutput(process)
+            }
+            throwingStream.closed shouldBe true
+        }
+
+        "checkResult closes the errorStream even when read throws IOException" {
+            val throwingStream =
+                object : InputStream() {
+                    var closed: Boolean = false
+
+                    override fun read(): Int = throw IOException("boom")
+
+                    override fun close() {
+                        closed = true
+                        super.close()
+                    }
+                }
+            val process = mockk<Process>()
+            every { process.exitValue() } returns 1
+            every { process.errorStream } returns throwingStream
+            shouldThrow<IOException> {
+                executor.checkResult(process)
+            }
+            throwingStream.closed shouldBe true
+        }
+
+        "getOutput propagates IOException when both read and close throw" {
+            val throwingStream =
+                object : InputStream() {
+                    override fun read(): Int = throw IOException("read boom")
+
+                    override fun close(): Unit = throw IOException("close boom")
+                }
+            val process = mockk<Process>()
+            every { process.inputStream } returns throwingStream
+            shouldThrow<IOException> {
+                executor.getOutput(process)
+            }
+        }
+
+        "checkResult propagates IOException when both read and close throw" {
+            val throwingStream =
+                object : InputStream() {
+                    override fun read(): Int = throw IOException("read boom")
+
+                    override fun close(): Unit = throw IOException("close boom")
+                }
+            val process = mockk<Process>()
+            every { process.exitValue() } returns 1
+            every { process.errorStream } returns throwingStream
+            shouldThrow<IOException> {
+                executor.checkResult(process)
+            }
+        }
+
+        "exec logs and rethrows IOException from getOutput" {
+            val throwingStream =
+                object : InputStream() {
+                    override fun read(): Int = throw IOException("read failed")
+                }
+            val process = mockk<Process>()
+            every { process.inputStream } returns throwingStream
+            every { process.exitValue() } returns 1
+            every { process.destroy() } just Runs
+            shouldThrow<IOException> {
+                executor.exec(process, "broken command")
+            }
+            verify { process.destroy() }
         }
     }
 }
