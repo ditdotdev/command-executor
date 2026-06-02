@@ -1,7 +1,7 @@
 # Project Development
 
 For general information about contributing changes, see the
-[Contributor Guidelines](https://github.com/datadatdat/.github/blob/master/CONTRIBUTING.md).
+[Contributor Guidelines](https://github.dev/dit/.github/blob/master/CONTRIBUTING.md).
 
 ## How it Works
  
