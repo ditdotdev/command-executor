@@ -1,8 +1,8 @@
 /*
- * Copyright Datadatdat.
+ * Copyright Dit.
  */
 
-package com.datadatdat.shell
+package dev.dit.shell
 
 import io.kotlintest.TestCase
 import io.kotlintest.TestCaseOrder
