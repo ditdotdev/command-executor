@@ -27,7 +27,7 @@ repositories {
     maven("https://dl.bintray.com/kotlin/kotlinx")
     maven {
         name = "dit"
-        url = uri("https://dit-maven.s3.amazonaws.com")
+        url = uri("https://maven.dit.dev")
     }
 }
 
