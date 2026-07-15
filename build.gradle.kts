@@ -16,7 +16,7 @@ buildscript {
 }
 
 plugins {
-    kotlin("jvm") version "2.4.0"
+    kotlin("jvm") version "2.4.10"
     id("com.github.ben-manes.versions") version("0.54.0")
     `maven-publish`
     jacoco
